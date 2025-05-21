@@ -13,41 +13,38 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.unicuritiba.projectstreaming.models.User;
-import br.com.unicuritiba.projectstreaming.repositories.UserRepository;
+import br.com.unicuritiba.projectstreaming.services.UserService;
 
 @RestController
 public class UserController {
 
 	@Autowired
-	UserRepository repository;
+	UserService service;
 	
 	@GetMapping("/users")
 	public ResponseEntity<List<User>> getUsers(){
-		return ResponseEntity.ok(repository.findAll());	
+		return ResponseEntity.ok(service.getAllUser());	
 	}
 
 	@GetMapping("/users/{id}")
 	public ResponseEntity<User> getUser(@PathVariable long id){
-		return ResponseEntity.ok(repository.findById(id).get());	
+		return ResponseEntity.ok(service.getUserById(id));	
 	}
 	
 	@PostMapping("/users")
 	public ResponseEntity<User> saveUser(
 			@RequestBody User user){
-		User savedUser = repository.save(user);
-		return ResponseEntity.ok(savedUser);
+		return ResponseEntity.ok(service.saveUser(user));
 	}
 	
 	@DeleteMapping("/users/{id}")
 	public void removeUser(@PathVariable long id) {
-		 repository.deleteById(id);
+		 service.removeUser(id);
 	}
 	
 	@PutMapping("/users/{id}")
 	public ResponseEntity<User> updateUser(@PathVariable long id,
 			@RequestBody User user) {
-		user.setId(id);
-		User savedUser = repository.save(user);
-		return ResponseEntity.ok(savedUser);
+		return ResponseEntity.ok(service.updateUser(id, user));
 	}
 }
